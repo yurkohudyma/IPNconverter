@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,20 +39,21 @@ public class IPNController extends JFrame {
             if (e.getSource() == inputDate) {
                 JTextField field = (JTextField) e.getSource();
                 res = field.getText();
-                inputIPN.setText(convertDateToIPN(res)+"");
+                long output = convertDateToIPN(res);
+                String result = output != 0 ? output+"" : "";
+                inputIPN.setText(result);
             }
         }
 
         private static long convertDateToIPN(String date) {
             LocalDate startDate = LocalDate.of(1899, 12, 31);
-            LocalDate userDate = null;
             try {
-                userDate = LocalDate.parse(date);
+                LocalDate userDate = LocalDate.parse(date);
                 return ChronoUnit.DAYS.between(startDate, userDate);
-            } catch (Exception e) {
+            } catch (DateTimeParseException e) {
                 inputDate.setText("Крива дата");
             }
-            return -1L;
+            return 0;
         }
     }
 
